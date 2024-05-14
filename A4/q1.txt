@@ -1,0 +1,111 @@
+Samantha Handal - 260983914
+
+Experiments
+The experiment preformed used pairs of increasingly larger numbers, starting from 1000 digits up to 10000 digits in increments of 1000 digits. For each pair, the multiplication was executed using one thread in the pool and then with four threads (number of threads corresponding to the number of processors in your system: quad-core Intel Core i5 processor). Each test was repeated three times for averaging, discarding the first run to reduce timing noise and better capture the steady-state performance.
+
+Input size: 1000 digits
+Testing with 1 thread...
+Execution time: 1102.369578 ms
+Execution time: 1157.224029 ms
+Execution time: 1172.496071 ms
+Testing with 4 threads...
+Execution time: 1049.324522 ms
+Execution time: 1090.144607 ms
+Execution time: 1201.761411 ms
+
+Input size: 2000 digits
+Testing with 1 thread...
+Execution time: 2126.653061 ms
+Execution time: 2777.890712 ms
+Execution time: 2782.400476 ms
+Testing with 4 threads...
+Execution time: 2257.182791 ms
+Execution time: 2646.002974 ms
+Execution time: 1710.056302 ms
+
+Input size: 3000 digits
+Testing with 1 thread...
+Execution time: 3564.639892 ms
+Execution time: 3208.24604 ms
+Execution time: 3214.877314 ms
+Testing with 4 threads...
+Execution time: 3079.288011 ms
+Execution time: 5658.334675 ms
+Execution time: 2165.633664 ms
+
+Input size: 4000 digits
+Testing with 1 thread...
+Execution time: 4777.625394 ms
+Execution time: 4840.211424 ms
+Execution time: 4837.034329 ms
+Testing with 4 threads...
+Execution time: 3350.886936 ms
+Execution time: 2808.016333 ms
+Execution time: 2862.640413 ms
+
+Input size: 5000 digits
+Testing with 1 thread...
+Execution time: 6575.406472 ms
+Execution time: 6285.536286 ms
+Execution time: 7058.300699 ms
+Testing with 4 threads...
+Execution time: 3405.400638 ms
+Execution time: 3967.338046 ms
+Execution time: 3479.454988 ms
+
+Input size: 6000 digits
+Testing with 1 thread...
+Execution time: 8090.221189 ms
+Execution time: 9788.589396 ms
+Execution time: 8462.988391 ms
+Testing with 4 threads...
+Execution time: 5231.794805 ms
+Execution time: 5542.251756 ms
+Execution time: 5583.490763 ms
+
+Input size: 7000 digits
+Testing with 1 thread...
+Execution time: 10699.902621 ms
+Execution time: 10875.258543 ms
+Execution time: 11605.20432 ms
+Testing with 4 threads...
+Execution time: 4498.582531 ms
+Execution time: 5322.7076 ms
+Execution time: 4365.076481 ms
+
+Input size: 8000 digits
+Testing with 1 thread...
+Execution time: 12830.43928 ms
+Execution time: 12497.430806 ms
+Execution time: 12297.704138 ms
+Testing with 4 threads...
+Execution time: 5623.354773 ms
+Execution time: 5839.835115 ms
+Execution time: 7086.860138 ms
+
+Input size: 9000 digits
+Testing with 1 thread...
+Execution time: 15891.247407 ms
+Execution time: 15681.500286 ms
+Execution time: 17229.32627 ms
+Testing with 4 threads...
+Execution time: 7443.934064 ms
+Execution time: 6689.511266 ms
+Execution time: 7135.562857 ms
+
+Input size: 10000 digits
+Testing with 1 thread...
+Execution time: 18106.654598 ms
+Execution time: 18408.848975 ms
+Execution time: 18164.204557 ms
+Testing with 4 threads...
+Execution time: 8321.958117 ms
+Execution time: 8203.913782 ms
+Execution time: 7587.677736 ms
+
+Analysis
+The experimental data shows increasing performance benefits from parallelism as the input size grows. For smaller inputs (1000 digits), the difference in execution time between single-threaded and multi-threaded executions is negligible. This is likely due to the overhead of managing multiple threads outweighing the benefits of parallel execution for relatively simple computations.
+
+As the input size increases, the benefit of parallel execution becomes more pronounced. Starting from 4000 digits, multi-threaded execution consistently outperforms single-threaded pool, with the performance gap widening further for larger input sizes. This shows the effectiveness of leveraging multiple cores for the parallelizable parts of the Karatsuba algorithm.
+
+For very large inputs (9000 and 10000 digits), the improvement ratio does not increase as significantly compared to the mid-range inputs (4000 to 7000 digits). This could be due to factors like increased overhead from task management and data movement in the multi-threaded environment, which may start to diminish the returns from parallel execution.

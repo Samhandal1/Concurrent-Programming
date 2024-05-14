@@ -1,0 +1,24 @@
+Samantha Handal - 260983914
+
+Experiments
+Setup:
+- String Length: 3,000,000 characters
+- Environment: MacBook Pro
+- Compiler: GCC with OpenMP support
+- Runs per Configuration: 3 (averaged for the reported timing)
+
+# Optimistic Threads, Average Execution Time (ms)
+0, 34
+1, 70.3
+2, 45.3
+3, 35
+4, 29.7
+…
+6, 26
+
+Analysis
+With no optimistic threads (0), the program operates sequentially, setting a baseline performance of 34ms. This scenario represents the traditional, non-parallel execution of the DFA matching task.
+
+The addition of a single optimistic thread (1) initially results in a performance degradation, with the execution time increasing to 70.3ms. This can be explained by the overhead associated with managing parallel execution and the complexity of handling optimistic matching logic.
+
+As more optimistic threads are introduced (2 to 4), we can see an improvement in performance. This indicates that the parallelization strategy begins to outweigh the parallel overhead, leading to more efficient processing of the string. The best performance was achieved with 6 optimistic threads, where the execution time is reduced to 26ms.

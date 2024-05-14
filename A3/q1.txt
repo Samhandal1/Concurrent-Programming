@@ -1,0 +1,133 @@
+Samantha Handal - 260983914
+
+*** Pooling strategy ***
+
+For my implementation, I used two types of executor services, 1) ExecutorService (specifically, actionExecutor) and 2) ScheduledExecutorService (spawnExecutor). Each plays a role in managing different aspects of the character simulation.
+
+1) actionExecutor
+
+ExecutorService manages a pool of threads for executing character actions, such as movement and behavior logic. The size of this pool is determined by the parameter t, which limits the maximum number of threads that can be active at any one time in the simulation. 
+
+When a character's action (implemented as a Runnable task by the character's run method) is submitted to this executor via actionExecutor.submit(character), it is queued for execution. The executor then assigns an available thread from the pool to execute the task. If all threads are busy, the task waits in the queue until a thread becomes available.
+
+This executor is used for the primary character behavior tasks. Each character is implemented to perform its logic (like calculating a path and moving step by step towards a goal) within the run method, which is executed by one of the threads managed by this executor.
+
+2) spawnExecutor
+
+spawnExecutor handles tasks that need to be executed periodically or after a certain delay. In the simulation, it's used to periodically spawn new characters.
+
+The method scheduleAtFixedRate is used to schedule the spawning of new characters at a fixed rate (s), it periodically calls the spawnCharacter method, which creates a new character and then submits this character's actions to the actionExecutor for execution. after the initial delay (set to s to start spawning after “s” ms), a new character spawn task is executed every s milliseconds. 
+
+This allows new characters to be introduced into the simulation without affecting the ongoing actions of existing characters. The spawnExecutor works alongside the actionExecutor, adding new characters into the pool of actively executing characters managed by actionExecutor.
+
+*** Experiments ***
+
+-- q1n - Average over 5 runs --
+
+m = 100 | n =  100 | s = 100  
+trial 1 = 598
+trial 2 = 556
+trial 3 = 601
+trial 4 = 590
+trial 5 = 613
+Total avg successful moves: 592
+
+m = 100 | n =  100 | s = 50
+trial 1 = 587
+trial 2 = 574
+trial 3 = 590
+trial 4 = 619
+trial 5 = 611
+Total avg successful moves: 596
+
+m = 100 | n =  100 | s = 20
+trial 1 = 561
+trial 2 = 616
+trial 3 = 550
+trial 4 = 609
+trial 5 = 651
+Total avg successful moves: 597
+
+-- q1p - Experiment with different thread pool sizes --
+
+m = 100 | n = 100 | s = 100
+Total successful moves for...
+t = 1: 423
+t = 3: 1351
+t = 5: 1458
+t = 8: 1449
+t = 10: 1455
+t = 25: 1416
+t = 50: 1449
+t = 100: 1253
+t = 150: 1368
+t = 175: 1292
+t = 200: 1404
+
+every 0.1 seconds a new character is spawned
+10 / 0.1 = 100 new characters on the board
+initial character count = 100
+=> max capacity = 200
+
+m = 100 | n = 100 | s = 50
+Total successful moves for...
+t = 1: 424
+t = 3: 1280
+t = 5: 2141
+t = 8: 2110
+t = 10: 2364
+t = 25: 2176
+t = 50: 2187
+t = 100: 2148
+t = 150: 2063
+t = 175: 2143
+t = 200: 2112
+t = 300: 2072
+
+every 0.05 seconds a new character is spawned
+10 / 0.05 = 200 new characters on the board
+initial character count = 100
+=> max capacity = 300
+
+m = 100 | n = 100 | s = 20
+Total successful moves for...
+t = 1: 449
+t = 3: 1357
+t = 5: 2254
+t = 8: 3621
+t = 10: 4414
+t = 25: 4125
+t = 50: 4212
+t = 100: 3759
+t = 150: 4152
+t = 175: 4006
+t = 200: 4285
+t = 300: 4130
+t = 500: 4133
+t = 600: 4062
+
+every 0.02 seconds a new character is spawned
+10 / 0.02 = 500 new characters on the board
+initial character count = 100
+=> max capacity = 600
+
+*** Analysis of results ***
+
+Non-Pooled Version (q1n)
+
+The average total successful moves slightly increase as the spawn rate (s) decreases from 100ms to 20ms. Therefore the non-pooled version maintains a relatively stable performance even as the rate of character introduction increases. Since the variation in successful moves is minimal, this indicates a consistent performance across different s valuess.
+
+Pooled Version (q1p)
+
+Introducing thread pools significantly increases the total successful moves, given an apropriate t. The experiments show the largest increase in successful moves as “s” decreases.
+
+As characters are spawned more frequently, the advantage of having a larger thread pool becomes more apparent. For s = 50, and especially for s = 20, we see peak performances when “t” aproaches the available CPU cores on my system, being 8. At this point, we find a balance between minimizing context switching while fully utilizing the CPU.
+
+Although increasing t initially leads to better performance, very high values (e.g., beyond 175 for s = 100, and 300 or 500 for s = 20) do not sustain the performance improvement and may even see a slight decline. This indicates a point beyond which adding more threads adds more context-switching overhead and coordination complexity than the value it brings in processing power. 
+
+At the highest value of “t” for each tested value of “s”, this is when the thread pool size is equal to the maximum number of characters that can be on the board. It's almost equivalent to the non-pooled version, where each character might be managed by its own thread, but without the overhead of creating and destroying threads, since the pool reuses threads. 
+When we set t = 1, this is essentially equivalent to a sequentially program, as only one thread is available to handle all the tasks submitted to the pool. We can see the average moves at this pool size across all spawn rates is approximately 432, which is relatively closer to the preformance of non-pooled version, at 595 moves.
+
+General Observations
+
+The pooled version (q1p) generally outperforms the non-pooled version (q1n) under high-concurrency scenarios (more frequent character spawns), particularly when the thread pool size is appropriately chosen. Choosing the right t involves balancing between having enough threads to efficiently handle concurrent tasks and avoiding too many threads that could lead to increased overhead from context switching and resource contention.

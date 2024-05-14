@@ -1,0 +1,199 @@
+Samantha Handal - 260983914
+
+*** base lock-free stack versus the elimination stack ***
+
+1) Varying Number of Threads (t)
+
+1.1) t = 2 | n = 1500 | s = 10 | e = 1 | w = 1
+
+base lock-free stack (x = 0)
+- 8187 ms 
+- 23 nodes remaining on the stack 
+
+elimination stack (x = 1)
+- 8337 ms
+- 14 nodes remaining on the stack
+
+
+1.2) t = 4 | n = 1500 | s = 10 | e = 1 | w = 1
+
+base lock-free stack (x = 0)
+- 8325 ms
+- 59 nodes remaining on the stack
+
+elimination stack (x = 1)
+- 8133 ms
+- 54 nodes remaining on the stack
+
+
+1.3) t = 8 | n = 1500 | s = 10 | e = 1 | w = 1
+
+base lock-free stack (x = 0)
+- 8136 ms
+- 73 nodes remaining on the stack
+
+elimination stack (x = 1)
+- 8207 ms
+- 62 nodes remaining on the stack
+
+
+1.4) t = 16 | n = 1500 | s = 10 | e = 1 | w = 1
+
+base lock-free stack (x = 0)
+- 8065 ms
+- 221 nodes remaining on the stack
+
+elimination stack (x = 1)
+- 8208 ms
+- 84 nodes remaining on the stack
+
+
+As the number of threads increases, the contention on the stack operations also increases. Both the base lock-free stack and the elimination stack show a trend where their operation times don't significantly increase with more threads, which suggests good scalability. At t = 4, the elimination stack slightly outperforms the base lock-free stack, otherwise the base lock-free stack prefered.
+
+————————————————————————
+
+2) Varying Sleep Time (s)
+
+2.1) t = 4 | n = 1500 | s = 5 | e = 1 | w = 1
+
+base lock-free stack (x = 0)
+- 3590 ms
+- 32 nodes remaining on the stack
+
+elimination stack (x = 1)
+- 3704 ms
+- 6 nodes remaining on the stack
+
+
+2.2) t = 4 | n = 1500 | s = 10 | e = 1 | w = 1
+
+base lock-free stack (x = 0)
+- 8028 ms
+- 66 nodes remaining on the stack
+
+elimination stack (x = 1)
+- 7872 ms
+- 12 nodes remaining on the stack
+
+
+2.3) t = 4 | n = 1500 | s = 20 | e = 1 | w = 1
+
+base lock-free stack (x = 0)
+- 16410 ms
+- 24 nodes remaining on the stack
+
+elimination stack (x = 1)
+- 16938 ms
+- 60 nodes remaining on the stack
+
+
+2.4) t = 4 | n = 1500 | s = 30 | e = 1 | w = 1
+
+base lock-free stack (x = 0)
+- 24946 ms
+- 41 nodes remaining on the stack
+
+elimination stack (x = 1)
+- 25210 ms
+- 67 nodes remaining on the stack
+
+
+Shorter sleep times (s = 5 and s = 10) result in higher contention, as operations are attempted more frequently. Under these conditions, the elimination stack generally performs comparably or slightly better than the base lock-free stack, particularly at s = 10. As the sleep time increases, the difference in performance between the two stacks becomes less pronounced, suggesting that the advantage of the elimination technique diminishes when contention is lower due to less frequent operation attempts.
+
+————————————————————————
+
+3) Varying Elimination Array Size (e)
+
+3.1) t = 4 | n = 1500 | s = 10 | e = 1 | w = 1
+
+base lock-free stack (x = 0)
+- 8197 ms
+- 9 nodes remaining on the stack
+
+elimination stack (x = 1)
+- 8160 ms
+- 133 nodes remaining on the stack
+
+
+3.2) t = 4 | n = 1500 | s = 10 | e = 2 | w = 1
+
+base lock-free stack (x = 0)
+- 8017 ms
+- 27 nodes remaining on the stack
+
+elimination stack (x = 1)
+- 7930 ms
+- 61 nodes remaining on the stack
+
+
+3.3) t = 4 | n = 1500 | s = 10 | e = 4 | w = 1
+
+base lock-free stack (x = 0)
+- 8148 ms
+- 16 nodes remaining on the stack
+
+elimination stack (x = 1)
+- 8106 ms
+- 79 nodes remaining on the stack
+
+
+3.4) t = 4 | n = 1500 | s = 10 | e = 8 | w = 1
+
+base lock-free stack (x = 0)
+- 8229 ms
+- 63 nodes remaining on the stack
+
+elimination stack (x = 1)
+- 8166 ms
+- 25 nodes remaining on the stack
+
+
+Increasing the size of the elimination array seems to offer marginal improvements to the elimination stack's performance. Notably, at e = 8, the elimination stack slightly outperforms the base lock-free stack, possibly because a larger elimination array provides more opportunities for successful eliminations, reducing contention. 
+
+————————————————————————
+
+4) Varying Wait Time (w)
+
+4.1) t = 4 | n = 1500 | s = 10 | e = 1 | w = 1
+
+base lock-free stack (x = 0)
+- 8262 ms
+- 59 nodes remaining on the stack
+
+elimination stack (x = 1)
+- 8186 ms
+- 131 nodes remaining on the stack
+
+
+4.2) t = 4 | n = 1500 | s = 10 | e = 1 | w = 2
+
+base lock-free stack (x = 0)
+- 8109 ms
+- 72 nodes remaining on the stack
+
+elimination stack (x = 1)
+- 8110 ms
+- 24 nodes remaining on the stack
+
+4.3) t = 4 | n = 1500 | s = 10 | e = 1 | w = 4
+
+base lock-free stack (x = 0)
+- 8090 ms
+- 19 nodes remaining on the stack
+
+elimination stack (x = 1)
+- 7990 ms
+- 121 nodes remaining on the stack
+
+4.4) t = 4 | n = 1500 | s = 10 | e = 1 | w = 8
+
+base lock-free stack (x = 0)
+- 7861 ms
+- 86 nodes remaining on the stack
+
+elimination stack (x = 1)
+- 8263 ms
+- 47 nodes remaining on the stack
+
+
+Varying the wait time for elimination attempts shows that a moderate wait time (w = 2 and w = 4) can lead to better performance for the elimination stack. Both too short and too long wait times (w = 1 and w = 8) do not show improvements. This indicates that there's a sweet spot for wait times that balances the need for threads to wait for a potential elimination partner against the risk of holding up threads unnecessarily long, which could degrade performance.
